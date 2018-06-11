@@ -32,17 +32,49 @@ I = cv2.equalizeHist(I).astype('int16')
 #plt.imshow(I, cmap = 'gray')
 
 gray_levels = np.unique(I)
-gray_levels_p =np.zeros(comb(gray_levels.size,2).astype('int16'))
-
+gray_levels_p =np.zeros(comb(gray_levels.size,2).astype('int16')).astype('float')
+cc = -1
 #qi = gl graay_levels[j] = qj
 for k,gl in enumerate(gray_levels):
-    for j in range(k+1,gray_levels.size):
+    for j in range(k,gray_levels.size-1):
+        cc+=1
         sum_1 = np.log(np.abs(gl - gray_levels[j])+1)
+#        print("sum1",sum_1)
         sum_2 = np.abs(np.where(I ==gl)[0].size*gl-np.where(I ==gray_levels[j])[0].size*gray_levels[j])/I.size
-#        sum_3 = 
-        gray_levels_p[k] = sum_1+sum_2
+#        print("sum2",sum_2)
+        sum_3 = np.min((np.where(I == gl)[0].std(),
+                        np.where(I == gl)[1].std(),
+                        np.where(I == gray_levels[j])[0].std(),
+                        np.where(I == gray_levels[j])[1].std()))/ \
+                np.max((np.where(I == gl)[0].std(),
+                        np.where(I == gl)[1].std(),
+                        np.where(I == gray_levels[j])[0].std(),
+                        np.where(I == gray_levels[j])[1].std()))
+#        print("sum3",sum_3)
+#        print("sum",sum_1+sum_2 + sum_3)
+        gray_levels_p[cc] =sum_1 + sum_2 + sum_3
+#        print("cc",cc,"arr", gray_levels_p[k])
       
+clusters = (gray_levels_p[gray_levels_p<1.5])*255/1.5
+clusters.sort()
+clusters = clusters.astype('uint8')
+
+IQ = np.zeros(I.shape)
+
+for i in range(clusters.size):
+    if i == 0:
+        IQ[I<clusters[0]] = i
+    elif i == clusters.size -1:
+        IQ[I>clusters[i]] = i
+    else:
+        IQ[np.logical_and(clusters[i-1]<I, I < clusters[i])] = i
         
-    
+t = IQ.mean() + 0.75*IQ.std()
+
+IQ[IQ!=IQ.max()] = 0
+IQ[IQ==IQ.max()] = 1
+plt.imshow(IQ)
+
+
 
 
