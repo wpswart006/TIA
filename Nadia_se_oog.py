@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from scipy.special import comb
 
 
-#rgb = cv2.imread('../IMG_7192.JPG')
+rgb = cv2.imread('../IMG_7192.JPG')
 rgb = cv2.imread('2018-06-08-100355_201x109_scrot.png')
 rgb = cv2.resize(rgb,(640,480))
 
@@ -63,16 +63,16 @@ IQ = np.zeros(I.shape)
 
 for i in range(clusters.size):
     if i == 0:
-        IQ[I<clusters[0]] = i
+        IQ[I<clusters[0]] = gray_levels[i]
     elif i == clusters.size -1:
-        IQ[I>clusters[i]] = i
+        IQ[I>clusters[i]] = gray_levels[i]
     else:
-        IQ[np.logical_and(clusters[i-1]<I, I < clusters[i])] = i
+        IQ[np.logical_and(clusters[i-1]<I, I < clusters[i])] = gray_levels[i]
         
 t = IQ.mean() + 0.75*IQ.std()
 
-IQ[IQ!=IQ.max()] = 0
-IQ[IQ==IQ.max()] = 1
+#IQ[IQ!=IQ.max()] = 0
+#IQ[IQ==IQ.max()] = 1
 plt.imshow(IQ)
 
 
