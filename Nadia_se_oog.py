@@ -4,8 +4,9 @@ import matplotlib.pyplot as plt
 from scipy.special import comb
 
 
-rgb = cv2.imread('../IMG_7192.JPG')
-rgb = cv2.imread('2018-06-08-100355_201x109_scrot.png')
+#rgb = cv2.imread('../IMG_7192.JPG')
+#rgb = cv2.imread('2018-06-08-100355_201x109_scrot.png')
+rgb = cv2.imread('2018-06-12-153453_193x107_scrot.png')
 rgb = cv2.resize(rgb,(640,480))
 
 r = rgb[:,:,2]
@@ -71,10 +72,11 @@ for i in range(clusters.size):
         
 t = IQ.mean() + 0.75*IQ.std()
 
-#IQ[IQ!=IQ.max()] = 0
-#IQ[IQ==IQ.max()] = 1
-plt.imshow(IQ)
+thresh =  IQ.mean() + 0.75* IQ.std()
 
+IQ[IQ<IQ.max()] = 0
+IQ[IQ == IQ.max()] = 1
+plt.imshow(IQ)
 
 
 
