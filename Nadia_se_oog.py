@@ -5,9 +5,11 @@ from scipy.special import comb
 
 
 #rgb = cv2.imread('../IMG_7192.JPG')
-#rgb = cv2.imread('2018-06-08-100355_201x109_scrot.png')
-rgb = cv2.imread('2018-06-12-153453_193x107_scrot.png')
-rgb = cv2.resize(rgb,(640,480))
+rgb = cv2.imread('2018-06-08-100355_201x109_scrot.png')
+#rgb = cv2.imread('2018-06-12-153453_193x107_scrot.png')
+W = 640
+H = 480
+rgb = cv2.resize(rgb,(W,H))
 
 r = rgb[:,:,2]
 g = rgb[:,:,1]
@@ -75,8 +77,29 @@ t = IQ.mean() + 0.75*IQ.std()
 thresh =  IQ.mean() + 0.75* IQ.std()
 
 IQ[IQ<IQ.max()] = 0
-IQ[IQ == IQ.max()] = 1
+IQ[IQ == IQ.max()] = True
 plt.imshow(IQ)
 
+cc = cv2.connectedComponentsWithStats(IQ.astype('uint8'))
 
+prox = np.zeros(cc[0]).astype('float32')
+#dens = np.zeros(cc[0]).astype('float32')
+dens = np.zeros(cc[0]).astype('float32')
+
+for k in range(prox.size):
+    delta = np.sqrt(np.power((W/2-cc[3][k][0]),2) + np.power((W/2-cc[3][k][1]),2))
+    prox[k] = 0.5*delta/np.sqrt(W*W+H*H)
+    comp = np.zeros(cc[1].shape)
+    comp[cc[1]==k] = 255
+    im2, contours, hierarchy = cv2.findContours(comp.astype('uint8'), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    area = cv2.contourArea(contours[0])
+    hull = cv2.convexHull(contours[0])
+    area1 = cv2.contourArea(hull)
+#    dens[k] = cc[2][k][4]/area1
+    if( area1 != 0 or area != 0):
+        dens[k] = area/area1
+    else:
+        dens[k] = 1
+#    (dens[k] = area/area1) if( area1 != 0 or area != 0) else dens[k] = 1
+    
 
