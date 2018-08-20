@@ -1,0 +1,6 @@
+#
+####### Metabolic Module Requirements #######
+#
+numpy
+keras
+tensorflow
