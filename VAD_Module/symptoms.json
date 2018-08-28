@@ -1,0 +1,35 @@
+{
+    "Dry_Skin": {
+        "Question": "Does the patient have dry skin?",
+        "Significance" : 50
+    },
+    "Dry_Eyes": {
+        "Question": "Does the patient have dry eyes?",
+        "Significance" : 100
+    },
+    "Eye_Anomalies": {
+        "Question": "Does the patient have foamy patches of other anomalies in their eyes?",
+        "Significance" : 1000
+    },
+    "Night_Blindness": {
+        "Question": "Does the patient suffer from night blindness?",
+        "Significance" : 100
+    },
+    "Delayed_Growth": {
+        "Question": "Is the patient short for his age?",
+        "Significance" : 100
+    },
+    "Infections": {
+        "Question": "Does the patient suffer from frequent chest and throat infections?",
+        "Significance" : 100
+    },
+    "Wound_Healing": {
+        "Question": "Is the patient's wounds healing slower than expeced?",
+        "Significance" : 100
+    },
+    "Acne": {
+        "Question": "Does the patient have Acne or breakouts?",
+        "Significance" : 100
+    }
+    
+}
