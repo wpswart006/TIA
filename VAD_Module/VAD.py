@@ -8,8 +8,8 @@ Created on Wed Aug 15 11:19:30 2018
 import json,numpy as np
 
 
-class predictor:
-    def __init__(self,symptoms = "symptoms.json",thresh = 1000):
+class Predictor:
+    def __init__(self,symptoms = "symptoms.json",thresh = 15):
         """
         Initialize the Vitamin a deficiency module with default paramters symptoms and thresh, where symptoms is a a string pointing to the path of thejson file
         and thresh is the threshold value in which case a patient is at risk
