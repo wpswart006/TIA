@@ -11,10 +11,12 @@ ws = load_workbook('../SAPBA_WP.xlsx').active
 CIMT = 1
 sick = 0
 healthy = 0
+index = 16 #11
 for row in ws.iter_rows(min_row=2):
-    print(row[16].value)
-    if (type(row[16].value) == int):
-        if row[16].value ==  CIMT: 
+    print(row[4].value,row[5].value)
+    if (type(row[index].value) == int and row[4].value<135.75 and row[4].value > 48.42 and row[5].value <170 and row[5].value>90):
+        
+        if row[index].value ==  CIMT: 
             while True:      
                 data.append((row[3].value,row[4].value,row[5].value))
                 output.append(1) 
@@ -52,18 +54,33 @@ input_dim = x_train.shape[1]
 nb_classes = y_train.shape[1]
 
 model = Sequential()
-model.add(Dense(10, input_dim=input_dim))
+model.add(Dense(32, input_dim=input_dim))
 model.add(Activation('relu'))
-model.add(Dense(16))
-model.add(Activation('relu'))
+# model.add(Dense(16))
+# model.add(Activation('relu'))
 model.add(Dense(nb_classes))
 model.add(Activation('softmax'))
-
 model.compile(loss='binary_crossentropy', optimizer='adadelta',metrics=['accuracy'])
-TP,FP,TN,FN = (0,0,0,0)
 
+TP,FP,TN,FN = (0,0,0,0)
+def shuffle_weights(model, weights=None):
+    """Randomly permute the weights in `model`, or the given `weights`.
+    This is a fast approximation of re-initializing the weights of a model.
+    Assumes weights are distributed independently of the dimensions of the weight tensors
+      (i.e., the weights have the same distribution along each dimension).
+    :param Model model: Modify the weights of the given model.
+    :param list(ndarray) weights: The model's weights will be replaced by a random permutation of these weights.
+      If `None`, permute the model's current weights.
+    """
+    if weights is None:
+        weights = model.get_weights()
+    weights = [np.random.permutation(w.flat).reshape(w.shape) for w in weights]
+    # Faster, but less random: only permutes along the first dimension
+    # weights = [np.random.permutation(w) for w in weights]
+    model.set_weights(weights)
 
 def train():
+        model.compile(loss='binary_crossentropy', optimizer='adadelta',metrics=['accuracy'])
         model.fit(x_train, y_train,
                         batch_size=16,
                         epochs=100,
@@ -96,7 +113,7 @@ def train():
         FN+=fn
 
 print("Training...")
-for _ in range(10):
+for _ in range(1):
         train()               
 print(f'|{TP/(TP+FP)}|{FP/(TP+FP)}|')
 print('--------------------------------')
